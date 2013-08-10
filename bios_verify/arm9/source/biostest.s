@@ -2,6 +2,23 @@
 .text
 .align 2
 .global test_crc
+.global test_waitbyloop
+.global test_vblankintrwait
+.global test_cpuset
+
+
+test_cpuset:
+	swi #0xB
+	bx lr
+
+test_vblankintrwait:
+	swi #0x5
+	bx lr
+
+
+test_waitbyloop:
+	swi #0x3
+	bx lr
 
 test_crc:
 	push {r1-r2}
