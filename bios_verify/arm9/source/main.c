@@ -16,17 +16,20 @@ int testcpuset() {
 	const char *error;
 	unsigned int *iptr;
 	int i;
-	dst = src;
+	dst = src + 2048;
 
 	iprintf("CpuSet test............ ");
-	*src = 0;
-	test_cpuset(src, dst, (512 | 0x6000000));
+	for (i = 0; i < 2048; i++)
+		dst[i] = src[i] = 1;
+	iptr = (void *) src;
+	*iptr = 0;
+	test_cpuset(src, dst, (512 | 0x5000000));
 	for (i = 0; i < 2048; i++)
 		if (dst[i]) {
 			error = "32-bit fill FAILED\n";
 			goto errorh;
 		}
-	test_cpuset(dst, src, (1024 | 0x2000000));
+	test_cpuset(dst, src, (1024 | 0x1000000));
 	for (i = 0; i < 2048; i++)
 		if (dst[i]) {
 			error = "16-bit fill FAILED\n";
@@ -52,16 +55,67 @@ int testcpuset() {
 			goto errorh;
 		}
 	iprintf("PASS\n");
+	free(src);
 	return 1;
 
 	errorh:
-	iprintf("FAIL %i\n", i);
+	free(src);
+	iprintf("FAIL\n");
 	iprintf(error);
+	iprintf("32-bit element #%id failed\n", i);
 	return 0;
 }
 	
 	
+int testcpufastset() {
+	char *src = malloc(4112), *dst;
+	const char *error;
+	unsigned int *iptr;
+	int i;
+	dst = src + 2056;
 
+	iprintf("CpuFastSet test........ ");
+	test_vblankintrwait();
+	iptr = (void *) dst;
+	for (i = 0; i < 513; i++)
+		iptr[i] = 1;
+	iptr = (void *) src;
+	*iptr = 0;
+	iptr = (void *) dst;
+	test_cpufastset(src, dst, 513 | 0x1000000);
+	for (i = 0; i < 513; i++)
+		if (iptr[i]) {
+			error = "Fill FAILED\n";
+			goto errorh;
+		}
+	iptr[513] = 1;
+	iptr = (void *) src;
+	iptr[513] = 0;
+	for (i = 0; i < 513; i++)
+		iptr[i] = ((i << 24) + 23 * i + (i >> 4) + 0x10000005);
+	test_cpufastset(src, dst, 514);
+	iptr = (void *) dst;
+	for (i = 0; i < 513; i++)
+		if (iptr[i] != ((i << 24) + 23 * i + (i >> 4) + 0x10000005)) {
+			error = "Copy FAILED\n";
+			goto errorh;
+		}
+	iptr = (void *) src;
+	if (iptr[513] == iptr[1027]) {
+		error = "Overcopying detected\n";
+		goto errorh;
+	}
+	iprintf("PASS\n");
+	return 1;
+
+	errorh:
+
+	iprintf("FAIL\n");
+	iprintf("Failed at element #%id 0x%X\n", i, iptr[i]);
+	iprintf(error);
+
+	return 0;
+}
 
 
 int testwaitbyloop() {
@@ -79,6 +133,10 @@ int testwaitbyloop() {
 	if (t - n < 1023) {
 		iprintf("FAIL\n");
 		iprintf("d/t = %i, > 1024 expected\n", t - n);
+		return 0;
+	} else if (t - n > 5120) {
+		iprintf("FAIL\n");
+		iprintf("d/t = %i, < 5120 expected\n", t - n);
 		return 0;
 	}
 	
@@ -155,6 +213,7 @@ int main(void) {
 	else if (!testwaitbyloop());
 	else if (!testvblankwait());
 	else if (!testcpuset());
+	else if (!testcpufastset());
 	else {
 		iprintf("All tests passed.\n");
 		for(;;);

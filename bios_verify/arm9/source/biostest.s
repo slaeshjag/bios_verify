@@ -5,6 +5,12 @@
 .global test_waitbyloop
 .global test_vblankintrwait
 .global test_cpuset
+.global test_cpufastset
+
+
+test_cpufastset:
+	swi #0xC
+	bx lr
 
 
 test_cpuset:
