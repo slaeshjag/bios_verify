@@ -9,6 +9,12 @@
 .global test_sqrt
 .global test_diff8unfilter
 .global test_diff16unfilter
+.global test_bitunpack
+
+
+test_bitunpack:
+	swi #0x10
+	bx lr
 
 test_diff8unfilter:
 	swi #0x16

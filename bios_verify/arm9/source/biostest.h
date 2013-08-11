@@ -3,6 +3,7 @@
 
 void test_diff8unfilter(void *src, void *dest);
 void test_diff16unfilter(void *src, void *dest);
+void test_bitunpack(void *src, void *dst, void *info);
 
 int test_sqrt(unsigned int num);
 void test_cpufastset(void *src, void *dst, int wordcount);
