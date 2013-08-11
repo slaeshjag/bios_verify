@@ -8,7 +8,23 @@
 
 #include "biostest.h"
 #include "crcdata.h"
+#include "sqrt_data.h"
 #include "ipc.h"
+
+
+int testsqrt() {
+	int i, n;
+	iprintf("SQRT test.............. ");
+
+	for (i = 0; i < 64; i++)
+		if (sqrt_data[(i << 1) + 1] != (n = test_sqrt(sqrt_data[i << 1]))) {
+			iprintf("FAIL\n");
+			iprintf("sqrt(%i) = %i, not %i\n", sqrt_data[(i << 1)], sqrt_data[(i << 1) + 1], n);
+			return 0;
+		}
+	iprintf("PASS\n");
+	return 1;
+}
 
 
 int testcpuset() {
@@ -92,7 +108,7 @@ int testcpufastset() {
 	iptr[513] = 0;
 	for (i = 0; i < 513; i++)
 		iptr[i] = ((i << 24) + 23 * i + (i >> 4) + 0x10000005);
-	test_cpufastset(src, dst, 514);
+	test_cpufastset(src, dst, 513);
 	iptr = (void *) dst;
 	for (i = 0; i < 513; i++)
 		if (iptr[i] != ((i << 24) + 23 * i + (i >> 4) + 0x10000005)) {
@@ -212,6 +228,7 @@ int main(void) {
 	else if (!testvblankwait());
 	else if (!testcpuset());
 	else if (!testcpufastset());
+	else if (!testsqrt());
 	else {
 		iprintf("All tests passed.\n");
 		for(;;);

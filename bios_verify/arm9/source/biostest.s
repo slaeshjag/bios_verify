@@ -6,6 +6,12 @@
 .global test_vblankintrwait
 .global test_cpuset
 .global test_cpufastset
+.global test_sqrt
+
+
+test_sqrt:
+	swi #0xD
+	bx lr
 
 
 test_cpufastset:
