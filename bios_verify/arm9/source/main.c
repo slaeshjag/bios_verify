@@ -75,7 +75,6 @@ int testcpufastset() {
 	dst = src + 2056;
 
 	iprintf("CpuFastSet test........ ");
-	test_vblankintrwait();
 	iptr = (void *) dst;
 	for (i = 0; i < 513; i++)
 		iptr[i] = 1;
@@ -125,7 +124,6 @@ int testwaitbyloop() {
 	iprintf("WaitByLoop test........ ");
 
 	*setting = 0x81;
-	while (*timer > 20);
 	n = *timer;
 	test_waitbyloop(65536);
 	t = *timer;
