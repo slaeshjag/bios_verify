@@ -7,6 +7,16 @@
 .global test_cpuset
 .global test_cpufastset
 .global test_sqrt
+.global test_diff8unfilter
+.global test_diff16unfilter
+
+test_diff8unfilter:
+	swi #0x16
+	bx lr
+
+test_diff16unfilter:
+	swi #0x18
+	bx lr
 
 
 test_sqrt:

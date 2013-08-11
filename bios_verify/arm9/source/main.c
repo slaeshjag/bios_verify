@@ -10,7 +10,7 @@
 #include "crcdata.h"
 #include "sqrt_data.h"
 #include "ipc.h"
-
+#include "compr_test.h"
 
 int testsqrt() {
 	int i, n;
@@ -229,6 +229,7 @@ int main(void) {
 	else if (!testcpuset());
 	else if (!testcpufastset());
 	else if (!testsqrt());
+	else if (!testdecompression());
 	else {
 		iprintf("All tests passed.\n");
 		for(;;);
