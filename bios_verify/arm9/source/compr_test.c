@@ -102,10 +102,15 @@ int testbitunpack() {
 				test_bitunpack(src, dst, &bitinfo);
 				if (getcrc(dst, 256) != bitunpack_facit[l]) {
 					iprintf("FAIL\n");
+					if (i == j && k == 0)
+						for (i = 0; i < 256; i++)
+							if (src[i] != dst[i] + (dst[i] ? bitinfo.data_offset : 0)) {
+								iprintf("byte %i, 0x%X!=0x%X\n", i, src[i], dst[i]);
+								break;
+							}
 					iprintf("FAIL w/ sb=%i,db=%i,sl=%i\nzf=%i,do=%i,n=%i\ncrc=0x%X\n", bitinfo.src_bits, bitinfo.dst_bits, bitinfo.src_len, bitinfo.data_offset, bitinfo.zero_flag, l, getcrc(dst, 256));
 					return 0;
 				}
-
 			}
 	iprintf("PASS\n");
 	return 1;
