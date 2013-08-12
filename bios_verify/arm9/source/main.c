@@ -200,8 +200,14 @@ int testcrc() {
 			return 0;
 		}
 	}
+
+	if ((res = test_crc(0x12340000, "High garbage", 12)) != 0x2CD) {
+		iprintf("FAIL\nBad CRC! Got 0x%X, should be 0x2CD\n", res);
+		return 0;
+	}
 	
 	iprintf("PASS\n");
+
 	return 1;
 }
 

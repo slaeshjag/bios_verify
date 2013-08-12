@@ -8,7 +8,7 @@ void test_bitunpack(void *src, void *dst, void *info);
 int test_sqrt(unsigned int num);
 void test_cpufastset(void *src, void *dst, int wordcount);
 void test_cpuset(void *src, void *dst, int wordcount);
-short test_crc(int initial_crc, void *addr, int len);
+short test_crc(unsigned int initial_crc, void *addr, int len);
 void test_waitbyloop(int wait);
 void test_vblankintrwait();
 
